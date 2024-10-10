@@ -1,0 +1,71 @@
+@page "/crear-personaje"
+@using SeriesPersonajesApp.Models
+@using SeriesPersonajesApp.Services
+@inject PersonajeService PersonajeService
+@inject SerieService SerieService
+@inject NavigationManager NavigationManager
+
+<h3>Crear Personaje</h3>
+
+<EditForm Model="@personaje" OnValidSubmit="GuardarPersonaje">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <InputText id="nombre" @bind-Value="personaje.Nombre" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="apodo">Apodo:</label>
+        <InputText id="apodo" @bind-Value="personaje.Apodo" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="raza">Raza:</label>
+        <InputText id="raza" @bind-Value="personaje.Raza" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="fotoUrl">Foto URL:</label>
+        <InputText id="fotoUrl" @bind-Value="personaje.FotoUrl" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="edad">Edad:</label>
+        <InputNumber id="edad" @bind-Value="personaje.Edad" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="poderCaracteristico">Poder Característico:</label>
+        <InputText id="poderCaracteristico" @bind-Value="personaje.PoderCaracteristico" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="serie">Serie:</label>
+        <InputSelect id="serie" @bind-Value="personaje.SerieId" class="form-control">
+            @foreach (var serie in series)
+            {
+                <option value="@serie.Id">@serie.Nombre</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</EditForm>
+
+@code {
+    private Personaje personaje = new Personaje();
+    private List<Serie> series = new List<Serie>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        series = await SerieService.GetSeriesAsync();
+    }
+
+    private async Task GuardarPersonaje()
+    {
+        await PersonajeService.CreatePersonajeAsync(personaje);
+        NavigationManager.NavigateTo("/personajes");
+    }
+}

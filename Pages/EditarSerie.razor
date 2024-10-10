@@ -1,0 +1,64 @@
+@page "/editar-serie/{Id:int}"
+@using SeriesPersonajesApp.Models
+@using SeriesPersonajesApp.Services
+@inject SerieService SerieService
+@inject NavigationManager NavigationManager
+
+<h3>Editar Serie</h3>
+
+@if (serie == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <EditForm Model="@serie" OnValidSubmit="GuardarSerie">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <InputText id="nombre" @bind-Value="serie.Nombre" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="pais">País:</label>
+            <InputText id="pais" @bind-Value="serie.Pais" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="idioma">Idioma:</label>
+            <InputText id="idioma" @bind-Value="serie.Idioma" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="fotoUrl">Foto URL:</label>
+            <InputText id="fotoUrl" @bind-Value="serie.FotoUrl" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="resumen">Resumen:</label>
+            <InputTextArea id="resumen" @bind-Value="serie.Resumen" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Serie serie;
+
+    protected override async Task OnInitializedAsync()
+    {
+        serie = await SerieService.GetSerieByIdAsync(Id);
+    }
+
+    private async Task GuardarSerie()
+    {
+        await SerieService.UpdateSerieAsync(serie);
+        NavigationManager.NavigateTo("/series");
+    }
+}

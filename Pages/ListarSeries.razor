@@ -1,0 +1,65 @@
+@page "/series"
+@using SeriesPersonajesApp.Models
+@using SeriesPersonajesApp.Services
+@inject SerieService SerieService
+@inject NavigationManager NavigationManager
+
+<h3>Series</h3>
+
+<a href="/crear-serie" class="btn btn-primary mb-3">Crear Nueva Serie</a>
+
+@if (series == null)
+{
+    <p>Cargando...</p>
+}
+else if (!series.Any())
+{
+    <p>No hay series registradas.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>País</th>
+                <th>Idioma</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var serie in series)
+            {
+                <tr>
+                    <td>@serie.Nombre</td>
+                    <td>@serie.Pais</td>
+                    <td>@serie.Idioma</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditarSerie(serie.Id)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => EliminarSerie(serie.Id)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Serie> series;
+
+    protected override async Task OnInitializedAsync()
+    {
+        series = await SerieService.GetSeriesAsync();
+    }
+
+    private void EditarSerie(int id)
+    {
+        NavigationManager.NavigateTo($"/editar-serie/{id}");
+    }
+
+    private async Task EliminarSerie(int id)
+    {
+        await SerieService.DeleteSerieAsync(id);
+        series = await SerieService.GetSeriesAsync();
+    }
+}

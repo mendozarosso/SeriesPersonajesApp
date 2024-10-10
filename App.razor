@@ -1,0 +1,55 @@
+﻿<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+<div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide">
+    <div class="show">
+        <p>
+            La conexión con el servidor se ha perdido. Reconectando...
+        </p>
+    </div>
+    <div class="failed">
+        <p>
+            La reconexión falló. Intenta recargar la página.
+        </p>
+    </div>
+    <div class="rejected">
+        <p>
+            La reconexión fue rechazada. Intenta recargar la página.
+        </p>
+    </div>
+</div>
+
+<style>
+    .my-reconnect-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        overflow: hidden;
+        background-color: #fff;
+        opacity: 0.8;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .components-reconnect-hide {
+        display: none;
+    }
+
+    .components-reconnect-show {
+        display: block;
+    }
+</style>

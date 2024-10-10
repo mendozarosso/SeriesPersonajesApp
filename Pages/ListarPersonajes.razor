@@ -1,0 +1,65 @@
+@page "/personajes"
+@using SeriesPersonajesApp.Models
+@using SeriesPersonajesApp.Services
+@inject PersonajeService PersonajeService
+@inject NavigationManager NavigationManager
+
+<h3>Personajes</h3>
+
+<a href="/crear-personaje" class="btn btn-primary mb-3">Crear Nuevo Personaje</a>
+
+@if (personajes == null)
+{
+    <p>Cargando...</p>
+}
+else if (!personajes.Any())
+{
+    <p>No hay personajes registrados.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apodo</th>
+                <th>Serie</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var personaje in personajes)
+            {
+                <tr>
+                    <td>@personaje.Nombre</td>
+                    <td>@personaje.Apodo</td>
+                    <td>@personaje.Serie?.Nombre</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditarPersonaje(personaje.Id)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => EliminarPersonaje(personaje.Id)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Personaje> personajes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        personajes = await PersonajeService.GetPersonajesAsync();
+    }
+
+    private void EditarPersonaje(int id)
+    {
+        NavigationManager.NavigateTo($"/editar-personaje/{id}");
+    }
+
+    private async Task EliminarPersonaje(int id)
+    {
+        await PersonajeService.DeletePersonajeAsync(id);
+        personajes = await PersonajeService.GetPersonajesAsync();
+    }
+}
